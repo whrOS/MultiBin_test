@@ -1,10 +1,10 @@
-function [Tout] = GetTmax(I, a, b, TRatio)
+function [Tout] = GetTmax(I, a, b, TRatio, NLmax)
 % Function : get the Tout,  such that  leads to number of the block
 %           satisfying NL<Tout has a ratio of TRatio in all blocks
 
 [A, B] = size(I);
 N = floor((A-2)/a) * floor((B-2)/b); % Total number of blocks
-Tmax = 600;
+Tmax = NLmax;
 
 Hs = cell(1,Tmax); % T = 0 - Tmax-1
 for i = 1:Tmax
@@ -49,7 +49,7 @@ for i = 1:floor((A-2)/a)
         end
     end
 end
-
+Tout = 0;
 for i = 2:Tmax
     Hs{i} = Hs{i} + Hs{i-1};
     Ratio = sum(Hs{i}(:)) / (2*N);
@@ -57,6 +57,9 @@ for i = 2:Tmax
         Tout = i;
         break;
     end
+end
+if Tout == 0
+    Tout = Tmax;
 end
 % Ratio
 

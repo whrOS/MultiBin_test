@@ -1,4 +1,4 @@
-function [MHs, k, m, HStep, NL, Tlog] = GetHists(I, a, b, Tmax, HNum)
+function [MHs, k, m, HStep, NL, Tlog] = GetHistsPairwise(I, a, b, Tmax, HNum)
 % Inputs :
 % I     : the cover image
 % a,b   : one block size of a * b
@@ -17,7 +17,7 @@ N = floor((A-2)/a) * floor((B-2)/b); % Total number of blocks
 
 Hs = cell(1,Tmax);
 for i = 1:Tmax
-    Hs{i} = zeros(1,256);
+    Hs{i} = zeros(256);
 end
 
 NL = zeros(floor((A-2)/a),floor((B-2)/b));
@@ -53,15 +53,14 @@ for i = 1:floor((A-2)/a)
             else
                 dmin = Y(2) - Y(1);
             end
-            Hs{NL(i,j)+1}(dmax+1) = Hs{NL(i,j)+1}(dmax+1) + 1;
-            Hs{NL(i,j)+1}(dmin+1) = Hs{NL(i,j)+1}(dmin+1) + 1;
+            Hs{NL(i,j)+1}(dmax+1, dmin+1) = Hs{NL(i,j)+1}(dmax+1, dmin+1) + 1;
         end
     end
 end
 
 MHs = cell(1,HNum);
 for i = 1:HNum
-    MHs{i} = zeros(1,256);
+    MHs{i} = zeros(256);
 end
 
 Tlog = [];
@@ -81,7 +80,7 @@ for i = 1 : 1 : numel(NLs)
 end
 Tlog = [Tlog, T];
 
-NONum =  sum(NLs<Tmax); % number of histograms which are non-empty
+NONum =  sum(NLs < Tmax); % number of histograms which are non-empty
 
 HStep = ceil((NONum - k) / (HNum-1));
 m = ceil((NONum - k - (HNum-1))/(HStep-1));
